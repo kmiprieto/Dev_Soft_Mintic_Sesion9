@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <script src="{{ url_for('static',filename= 'js/SESION6.js') }}"></script>
+    <title>Formulario de registro</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename= 'css/miEstilo.css') }}" />
+</head>
+<body>
+    <h1>Registro para vacunación COVID-19</h1>
+    <form name="formRegistro" onsubmit="validar_formulario();">
+        <p>
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" id="nombre"/>
+        </p>
+        <p>
+            <label for="username">Usuario:</label>
+            <input type="text" name="username" id="username"/>
+        </p>
+        <p>
+            <label for="sexo">Sexo:</label>
+            <input type="radio" name="sexo" id="sexo" value="hombre">Hombre
+            <input type="radio" name="sexo" id="sexo" value="mujer">Mujer 
+        </p>
+        <p>
+            <label for="correo">Correo:</label>
+            <input type="text" name="correo" id="correo"/>
+        </p>
+        <p>
+            <label for="password">Contraseña:</label>
+            <input type="password" name="password" id="password"/>
+            <img src="{{ url_for('static',filename= 'images/view.png') }}"
+                 onmouseover="mostrarPassword();"
+                 onmouseout="ocultarPassword();"/>
+        </p>
+        <p>
+            <input type="checkbox" name="condiciones" /> Declaro haber leído y aceptar las
+            condiciones generales del programa y la normativa sobre protección de datos
+        </p>
+        <p>
+            <button type="submit" value="Enviar">Enviar</button>
+        </p>
+        
+    </form>
+</body>
+</html>
