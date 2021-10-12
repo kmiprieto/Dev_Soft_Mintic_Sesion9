@@ -8,9 +8,12 @@ import utils
 from forms import ContactUs
 
 import yagmail as yagmail
+import os
 
 app = Flask(__name__)
 app.debug = True
+app.secret_key = os.urandom(12)
+#app.secret_key = 'super secret key'
 
 
 @app.route('/')
@@ -46,6 +49,11 @@ def register():
                 flash(error)
                 return render_template('register.html')
 
+            yag = yagmail.SMTP('mintic202221@gmail.com', 'Mintic2022')
+            yag.send(to=email,subject='Activa tu cuenta',
+                     contents='Bienvenido al portal de Registro de Vacunación usa este link para activar tu cuenta')
+
+            flash("Revisa tu correo para activar tu cuenta")
             return render_template('login.html')
         return render_template('register.html')
     except Exception as e:
