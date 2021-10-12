@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Iniciar sesión</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/miEstilo.css') }}">
+{% extends "base.html" %}
+{% block title %} Iniciar sesión {% endblock %}
+{% block mainTitle %} Iniciar sesión {% endblock %}
 
-    <script src="{{ url_for('static', filename='js/SESION6.js') }}"></script>
-</head>
-<body>
-    <section class="content">
-        {% for message in get_flashed_messages() %}
-        <div class="flash"> {{ message }} </div>
-        {% endfor %}
-    </section>
-    <h1>Iniciar sesión</h1>
-    <form name="loginForm" method="post">
+{% block content %}
+    <form name="loginForm" method="post" action="{{ url_for('register') }}">
         <div>
             <label for="username">Usuario</label>
             <input type="text" name="username" id="username" />
@@ -28,5 +17,4 @@
         </div>
         <input type="submit" value="Iniciar sesion">
     </form>
-</body>
-</html>
+{% endblock %}

@@ -2,10 +2,11 @@
 
 # Press Mayús+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, jsonify, redirect
 
 import utils
 from forms import ContactUs
+from message import mensajes
 
 import yagmail as yagmail
 import os
@@ -13,7 +14,9 @@ import os
 app = Flask(__name__)
 app.debug = True
 app.secret_key = os.urandom(12)
-#app.secret_key = 'super secret key'
+
+
+# app.secret_key = 'super secret key'
 
 
 @app.route('/')
@@ -21,9 +24,34 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/login')
+@app.route('/login', methods=('GET', 'POST'))
 def login():
-    return render_template('login.html')
+    try:
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+
+            if not username:
+                error = "Debes ingresar un usuario"
+                flash(error)
+                return render_template('login.html')
+
+            if not password:
+                error = "Debes ingresar una contraseña"
+                flash(error)
+                return render_template('login.html')
+
+            if username == 'Prueba' and password == 'Prueba123':
+                return redirect('mensaje')
+            else:
+                error = 'Usuario o Contraseña inválidos.'
+                flash(error)
+                return render_template('login.html')
+        else:
+            return render_template('login.html')
+    except ValueError as ex:
+        print(ex)
+        return render_template('login.html')
 
 
 @app.route('/register', methods=('GET', 'POST'))
@@ -50,7 +78,7 @@ def register():
                 return render_template('register.html')
 
             yag = yagmail.SMTP('mintic202221@gmail.com', 'Mintic2022')
-            yag.send(to=email,subject='Activa tu cuenta',
+            yag.send(to=email, subject='Activa tu cuenta',
                      contents='Bienvenido al portal de Registro de Vacunación usa este link para activar tu cuenta')
 
             flash("Revisa tu correo para activar tu cuenta")
@@ -64,3 +92,8 @@ def register():
 def contactUs():
     form = ContactUs()
     return render_template('contactUs.html', form=form)
+
+
+@app.route('/mensaje')
+def message():
+    return jsonify({'usuario': mensajes, 'mensaje': 'Mensajes'})
