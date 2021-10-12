@@ -3,7 +3,7 @@
 {% block mainTitle %} Iniciar sesión {% endblock %}
 
 {% block content %}
-    <form name="loginForm" method="post" action="{{ url_for('register') }}">
+    <form name="loginForm" method="post" action="{{ url_for('login') }}">
         <div>
             <label for="username">Usuario</label>
             <input type="text" name="username" id="username" />

@@ -7,6 +7,7 @@ from flask import Flask, render_template, request, flash, jsonify, redirect
 import utils
 from forms import ContactUs
 from message import mensajes
+from db import get_db, close_db
 
 import yagmail as yagmail
 import os
@@ -31,6 +32,9 @@ def login():
             username = request.form['username']
             password = request.form['password']
 
+            db = get_db()
+            error = None
+
             if not username:
                 error = "Debes ingresar un usuario"
                 flash(error)
@@ -41,12 +45,19 @@ def login():
                 flash(error)
                 return render_template('login.html')
 
-            if username == 'Prueba' and password == 'Prueba123':
+            """if username == 'Prueba' and password == 'Prueba123':
                 return redirect('mensaje')
             else:
                 error = 'Usuario o Contraseña inválidos.'
                 flash(error)
-                return render_template('login.html')
+                return render_template('login.html')"""
+
+            user = db.execute('SELECT * FROM usuario WHERE usuario = ? AND contraseña = ?', (username, password)).fetchone()
+
+            if user is None:
+                error = 'Usuario o Contraseña inválidos.'
+            else:
+                return redirect('mensaje')
         else:
             return render_template('login.html')
     except ValueError as ex:
