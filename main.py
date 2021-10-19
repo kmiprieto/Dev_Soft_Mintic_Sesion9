@@ -139,7 +139,7 @@ def register():
         return render_template('register.html')
 
 
-@app.route('/contactUs', methods=['GET', 'POST'])
+@app.route('/contactUs', methods=('GET', 'POST'))
 def contactUs():
     form = ContactUs()
     return render_template('contactUs.html', form=form)
@@ -152,7 +152,7 @@ def login_required(view):
             return redirect(url_for('login'))
         return view(**kwargs)
 
-    return wrapped_view()
+    return wrapped_view
 
 
 @app.route('/mensaje')
@@ -166,7 +166,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/send', methods=['GET', 'POST'])
+@app.route('/send', methods=('GET', 'POST'))
 @login_required
 def send():
     try:
@@ -198,10 +198,11 @@ def send():
                 error = 'No existe el usuario ingresado'
                 flash(error)
             else:
-                db.execute('INSERT INTO mensajes (from_id,to_id,asunto,mensaje) VALUES (?,?,?,?)',
-                           (from_id, to_username[0], subject, body))
+                db = get_db()
+                db.execute('INSERT INTO mensajes (from_id, to_id, asunto, mensaje) VALUES (?,?,?,?)',
+                           (from_id, user_to[0], subject, body))
                 db.commit()
-                db.close_db()
+                #db.close_db()
                 flash('Mensaje Enviado')
         return render_template('send.html')
     except Exception as e:
@@ -216,10 +217,10 @@ def load_logged_in_user():
         g.user = None
     else:
         db = get_db()
-        g.user = db.execute('SELECT * FROM usuario WHERE id_usuario = ?', (user_id,)).fetchone()
+        g.user = db.execute('SELECT * FROM usuario WHERE id_usuario = ?', (user_id, )).fetchone()
 
 
-@app.route('/downloadpdf', methods=['GET', 'POST'])
+@app.route('/downloadpdf', methods=('GET', 'POST'))
 @login_required
 def download_pdf():
     try:
@@ -228,10 +229,14 @@ def download_pdf():
         print(e)
 
 
-@app.route('/downloadimage', methods=['GET', 'POST'])
+@app.route('/downloadimage', methods=('GET', 'POST'))
 @login_required
 def download_image():
     try:
         return send_file("static/resources/image.png", as_attachment=True)
     except Exception as e:
         print(e)
+
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port =443, ssl_context=('micertificado.pem', 'llaveprivada.pem'))
